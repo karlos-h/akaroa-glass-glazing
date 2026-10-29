@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" role="img" aria-label="Akaroa Glass and Glazing">
+  <title>Akaroa Glass and Glazing</title>
+  <!-- Roofline over a four-light window pane. Recolour the strokes by
+       changing the "color" style below: Harbour Deep #1B4350 on light
+       backgrounds, Cloud White #F8F6F1 reversed on Harbour Deep. -->
+  <g style="color:#1B4350">
+    <path d="M11 47 L48 15 L85 47" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="25" y="53" width="46" height="35" rx="2" fill="#8FC7C7"/>
+    <path d="M48 53V88 M25 70.5H71" stroke="#F8F6F1" stroke-width="5"/>
+    <rect x="25" y="53" width="46" height="35" rx="2" fill="none" stroke="currentColor" stroke-width="6"/>
+  </g>
+</svg>

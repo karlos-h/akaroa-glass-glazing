@@ -1,0 +1,846 @@
+/* ==========================================================================
+   Akaroa Glass and Glazing — styles
+   Mobile-first. No build step, no preprocessor.
+
+   Contrast notes (WCAG AA needs 4.5:1 for body text, 3:1 for large text
+   and non-text UI). Every body-text pairing used on this page:
+
+     Basalt Charcoal #2A2926 on Cloud White    #F8F6F1  — 13.5:1  AAA
+     Basalt Charcoal #2A2926 on Driftwood Sand #DCCBA6  —  9.1:1  AAA
+     Cloud White     #F8F6F1 on Harbour Deep   #1B4350  —  9.9:1  AAA
+     Cloud White     #F8F6F1 on Basalt Charcoal#2A2926  — 13.5:1  AAA
+     Harbour Deep    #1B4350 on Cloud White    #F8F6F1  —  9.9:1  AAA
+     Glass Aqua      #8FC7C7 on Harbour Deep   #1B4350  —  5.7:1  AA
+     Glass Aqua      #8FC7C7 on Basalt Charcoal#2A2926  —  7.7:1  AAA
+     Peninsula Green #556B4A on Cloud White    #F8F6F1  —  5.4:1  AA
+
+   IMPORTANT: Glass Aqua on Cloud White is only 1.7:1 — it must never be
+   used for text on a light background. On light backgrounds it is used
+   for underlines, rules and fills only; link text there is Harbour Deep.
+   ========================================================================== */
+
+/* ---------- tokens ---------- */
+:root {
+  --harbour:   #1B4350;  /* primary dark   */
+  --peninsula: #556B4A;  /* supporting accent — sparingly */
+  --aqua:      #8FC7C7;  /* interactive accent */
+  --driftwood: #DCCBA6;  /* warm neutral */
+  --basalt:    #2A2926;  /* body text / footer */
+  --cloud:     #F8F6F1;  /* base background */
+
+  --harbour-dark: #143440; /* hover/press only, derived from --harbour */
+  --sand-tint:    #EFE7D3; /* light wash of driftwood for card fills */
+
+  --font-head: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-body: "Public Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+  --wrap: 74rem;
+  --gutter: 1.25rem;
+
+  --r-sm: 4px;
+  --r-md: 8px;
+  --r-lg: 14px;
+
+  --shadow-card: 0 1px 2px rgba(42, 41, 38, .06), 0 8px 24px rgba(27, 67, 80, .07);
+  --shadow-nav:  0 2px 14px rgba(20, 52, 64, .28);
+}
+
+/* ---------- reset-ish ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 6.5rem; /* sticky header clearance for anchor links */
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--cloud);
+  color: var(--basalt);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+img { max-width: 100%; height: auto; display: block; }
+svg { display: block; }
+
+h1, h2, h3 {
+  font-family: var(--font-head);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin: 0 0 .6em;
+  text-wrap: balance;
+}
+
+p { margin: 0 0 1.1em; }
+p:last-child { margin-bottom: 0; }
+
+ul { margin: 0; padding: 0; }
+li { list-style: none; }
+
+a { color: var(--harbour); }
+
+/* ---------- shared utilities ---------- */
+.wrap {
+  width: 100%;
+  max-width: var(--wrap);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 200;
+  background: var(--cloud);
+  color: var(--harbour);
+  padding: .75rem 1.25rem;
+  font-weight: 600;
+  border-radius: 0 0 var(--r-md) 0;
+}
+.skip-link:focus { left: 0; }
+
+/* one visible focus treatment everywhere, keyboard-friendly */
+:where(a, button, input, textarea, [tabindex]):focus-visible {
+  outline: 3px solid var(--aqua);
+  outline-offset: 3px;
+  border-radius: var(--r-sm);
+}
+/* on light backgrounds aqua alone is too pale — double it up.
+   The quote form is a Cloud White card sitting inside the dark contact
+   section, so it needs the light treatment even though its section is
+   excluded above (aqua on cloud is 1.7:1, under the 3:1 minimum for a
+   focus indicator). */
+.section:not(.section--contact) :where(a, button, input, textarea):focus-visible,
+.quote-form :where(a, button, input, textarea):focus-visible {
+  outline-color: var(--harbour);
+  box-shadow: 0 0 0 6px rgba(143, 199, 199, .55);
+}
+
+.gloss {
+  font-style: normal;
+  opacity: .8;
+  font-size: .9em;
+}
+
+/* inline text link on light backgrounds — aqua underline, deep text */
+.link {
+  color: var(--harbour);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: var(--aqua);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+.link:hover { color: var(--harbour-dark); text-decoration-color: var(--harbour); }
+
+.link--arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  text-decoration-thickness: 2px;
+}
+.link--arrow svg { width: 1.15em; height: 1.15em; transition: transform .18s ease; }
+.link--arrow:hover svg { transform: translateX(4px); }
+
+/* ---------- buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .6rem;
+  padding: .95rem 1.5rem;
+  border: 2px solid transparent;
+  border-radius: var(--r-md);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color .18s ease, color .18s ease, border-color .18s ease, transform .12s ease;
+}
+.btn:active { transform: translateY(1px); }
+.btn__icon { width: 1.25rem; height: 1.25rem; flex: none; }
+
+.btn--aqua {
+  background: var(--aqua);
+  color: var(--harbour);          /* 5.7:1 on aqua */
+  border-color: var(--aqua);
+}
+.btn--aqua:hover { background: #A6D4D4; border-color: #A6D4D4; }
+
+.btn--deep {
+  background: var(--harbour);
+  color: var(--cloud);
+  border-color: var(--harbour);
+}
+.btn--deep:hover { background: var(--harbour-dark); border-color: var(--harbour-dark); }
+
+.btn--ghost {
+  background: transparent;
+  color: var(--cloud);
+  border-color: rgba(248, 246, 241, .55);
+}
+.btn--ghost:hover { background: rgba(248, 246, 241, .12); border-color: var(--cloud); }
+
+.btn--sm { padding: .6rem 1rem; font-size: .9375rem; }
+.btn--block { width: 100%; }
+
+/* ---------- image placeholders ----------
+   Deliberately obvious so nobody mistakes one for a real photo. */
+.ph {
+  position: relative;
+  background-color: var(--driftwood);
+  background-image:
+    repeating-linear-gradient(45deg,
+      rgba(42, 41, 38, .055) 0 12px,
+      transparent 12px 24px);
+  border: 2px dashed rgba(42, 41, 38, .3);
+  border-radius: var(--r-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 12rem;
+  overflow: hidden;
+}
+.ph__label {
+  font-family: ui-monospace, SFMono-Regular, "Cascadia Mono", Menlo, Consolas, monospace;
+  font-size: .8125rem;
+  letter-spacing: .02em;
+  color: var(--basalt);
+  background: rgba(248, 246, 241, .92);
+  border-radius: var(--r-sm);
+  padding: .4rem .7rem;
+  text-align: center;
+  max-width: 90%;
+}
+.ph--portrait { aspect-ratio: 4 / 5; min-height: 16rem; }
+.ph--map      { aspect-ratio: 4 / 3; }
+/* Real photos keep the placeholder's class, so they crop instead of
+   stretching once the <div> is swapped for an <img>. */
+.ph img, img.ph, img.hero__media { width: 100%; height: 100%; object-fit: cover; }
+
+/* ==========================================================================
+   HEADER / NAV
+   ========================================================================== */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--harbour);
+  color: var(--cloud);
+}
+.site-header.is-stuck { box-shadow: var(--shadow-nav); }
+
+.utility-bar {
+  background: var(--harbour-dark);
+  font-size: .8125rem;
+  line-height: 1.4;
+}
+.utility-bar__inner {
+  display: flex;
+  flex-direction: column;
+  gap: .15rem;
+  align-items: center;
+  text-align: center;
+  padding-block: .5rem;
+}
+.utility-bar p { margin: 0; }
+.utility-bar__tagline {
+  font-family: var(--font-head);
+  font-style: italic;
+  font-size: .9375rem;
+  color: var(--aqua);
+}
+.utility-bar__area { color: rgba(248, 246, 241, .92); }
+/* on narrow screens the phone gets its own line, so drop the separator */
+@media (max-width: 39.999em) {
+  .utility-bar .dot { display: none; }
+  .utility-bar__phone { display: block; margin-top: .1rem; }
+}
+.utility-bar__phone { color: var(--cloud); font-weight: 600; text-decoration: none; white-space: nowrap; }
+.utility-bar__phone:hover { color: var(--aqua); }
+.utility-bar .dot { margin-inline: .35rem; opacity: .55; }
+
+.nav-bar {
+  display: flex;
+  flex-wrap: wrap;          /* lets the mobile nav panel drop to its own row */
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-block: .85rem;
+  position: relative;
+}
+
+/* --- brand lockup --- */
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: .7rem;
+  color: var(--cloud);
+  text-decoration: none;
+}
+.brand__mark { color: currentColor; flex: none; }
+.brand__words { display: flex; flex-direction: column; }
+.brand__name {
+  font-family: var(--font-head);
+  font-weight: 600;
+  font-size: 1.35rem;
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+}
+.brand__sub {
+  font-family: var(--font-body);
+  font-size: .625rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .28em;
+  color: var(--aqua);
+  margin-top: .25rem;
+}
+
+/* --- hamburger --- */
+/* The toggle only works with JS, so it stays hidden without it and the nav
+   below stays open instead. The .js class is set by an inline script in
+   <head>. */
+.nav-toggle {
+  display: none;
+  align-items: center;
+  gap: .55rem;
+  background: transparent;
+  border: 2px solid rgba(248, 246, 241, .45);
+  border-radius: var(--r-md);
+  color: var(--cloud);
+  font-family: var(--font-body);
+  font-size: .875rem;
+  font-weight: 600;
+  padding: .55rem .8rem;
+  cursor: pointer;
+}
+.js .nav-toggle { display: inline-flex; }
+.nav-toggle__bars { display: grid; gap: 4px; width: 20px; }
+.nav-toggle__bars span {
+  display: block;
+  height: 2px;
+  background: currentColor;
+  border-radius: 2px;
+  transition: transform .2s ease, opacity .2s ease;
+}
+.nav-toggle[aria-expanded="true"] .nav-toggle__bars span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.nav-toggle[aria-expanded="true"] .nav-toggle__bars span:nth-child(2) { opacity: 0; }
+.nav-toggle[aria-expanded="true"] .nav-toggle__bars span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+/* --- nav list (mobile: collapsed panel, but only when JS can reopen it) --- */
+.primary-nav {
+  width: 100%;
+  order: 3;
+  border-top: 1px solid rgba(143, 199, 199, .28);
+  padding-block: .5rem .9rem;
+}
+.js .primary-nav { display: none; }
+.js .primary-nav.is-open { display: block; }
+.primary-nav ul { display: flex; flex-direction: column; gap: .15rem; }
+/* :not(.btn) so this doesn't out-specify the .btn rules on the Call Johnny
+   link and strip its padding. */
+.primary-nav a:not(.btn) {
+  display: block;
+  color: var(--cloud);
+  text-decoration: none;
+  font-weight: 600;
+  padding: .7rem .25rem;
+  border-radius: var(--r-sm);
+}
+.primary-nav a:not(.btn):hover { color: var(--aqua); }
+.primary-nav__cta { margin-top: .6rem; }
+.primary-nav__cta a { display: inline-flex; color: var(--harbour); }
+.primary-nav__cta a:hover { color: var(--harbour); }
+
+/* ==========================================================================
+   HERO
+   ========================================================================== */
+.hero {
+  position: relative;
+  background: var(--harbour);
+  color: var(--cloud);
+  isolation: isolate;
+  overflow: hidden;
+}
+/* Placeholder pattern is drawn with low-alpha colours rather than opacity, so
+   a real photo can take this element's place. Swap the <div> for an <img>
+   that KEEPS class="hero__media" — the object-fit rule above then crops it. */
+.hero__media {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background-color: rgba(220, 203, 166, .14);
+  background-image: repeating-linear-gradient(45deg,
+    rgba(248, 246, 241, .07) 0 12px,
+    transparent 12px 24px);
+}
+/* the placeholder caption sits above the scrim so it stays readable */
+.hero__ph-note {
+  position: absolute;
+  right: var(--gutter);
+  bottom: .75rem;
+  z-index: 1;
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, "Cascadia Mono", Menlo, Consolas, monospace;
+  font-size: .75rem;
+  color: var(--cloud);
+  background: rgba(20, 52, 64, .85);
+  border: 1px dashed rgba(143, 199, 199, .6);
+  border-radius: var(--r-sm);
+  padding: .3rem .55rem;
+}
+/* dark scrim so text stays legible once a real photo goes in */
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(180deg,
+    rgba(27, 67, 80, .90) 0%,
+    rgba(27, 67, 80, .82) 55%,
+    rgba(20, 52, 64, .94) 100%);
+  pointer-events: none;
+}
+
+.hero__inner { padding-block: 3.25rem 3.5rem; }
+
+.hero__eyebrow {
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--aqua);
+  margin-bottom: 1rem;
+}
+
+.hero__heading {
+  font-size: clamp(2.4rem, 9vw, 4.5rem);
+  font-style: italic;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-bottom: .5em;
+  max-width: 16ch;
+}
+
+.hero__lede {
+  font-size: clamp(1.0625rem, 2.4vw, 1.25rem);
+  line-height: 1.6;
+  max-width: 56ch;
+  color: rgba(248, 246, 241, .95);
+  margin-bottom: 1.75rem;
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .85rem;
+  margin-bottom: 2rem;
+}
+.hero__actions .btn { flex: 1 1 auto; min-width: min(100%, 16rem); }
+
+.hero__points {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  border-top: 1px solid rgba(143, 199, 199, .35);
+  padding-top: 1.35rem;
+  font-size: .9375rem;
+  color: rgba(248, 246, 241, .92);
+}
+.hero__points li { position: relative; padding-left: 1.6rem; }
+.hero__points li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .52em;
+  width: .55rem;
+  height: .55rem;
+  border-radius: 2px;
+  background: var(--aqua);
+}
+
+/* ==========================================================================
+   SECTIONS — shared
+   ========================================================================== */
+.section { padding-block: 3.5rem; }
+
+.section__eyebrow {
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--peninsula);
+  margin-bottom: .75rem;
+}
+.section__eyebrow--light { color: var(--aqua); }
+
+.section__heading {
+  font-size: clamp(1.75rem, 5vw, 2.6rem);
+  color: var(--harbour);
+  max-width: 22ch;
+}
+.section__heading--light { color: var(--cloud); }
+
+.section__intro {
+  font-size: 1.0625rem;
+  max-width: 62ch;
+  margin-bottom: 2.25rem;
+}
+
+.section__foot { margin-top: 2rem; font-size: .9375rem; }
+.section__foot--muted { color: #4A4843; }
+
+/* ---------- services ---------- */
+.section--services { background: var(--cloud); }
+
+.cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+.card {
+  background: var(--sand-tint);
+  border: 1px solid rgba(85, 107, 74, .22);
+  border-radius: var(--r-lg);
+  padding: 1.5rem 1.4rem;
+  box-shadow: var(--shadow-card);
+}
+.card__icon {
+  display: inline-flex;
+  color: var(--harbour);
+  margin-bottom: .9rem;
+}
+.card__icon svg { width: 2.25rem; height: 2.25rem; }
+.card__title {
+  font-size: 1.25rem;
+  color: var(--harbour);
+  margin-bottom: .45em;
+}
+.card p { font-size: .9688rem; margin: 0; }
+
+/* ---------- about ---------- */
+.section--about { background: var(--driftwood); }
+.section--about .section__eyebrow { color: #3E4F35; } /* darker green for contrast on sand */
+.about__grid { display: grid; gap: 2rem; }
+.about__lead { font-size: 1.125rem; }
+.about__lead em { font-style: italic; }
+.about__more { margin-top: 1.5rem; }
+.section--about .link { text-decoration-color: var(--harbour); }
+
+/* ---------- word of mouth ---------- */
+.section--quotes { background: var(--cloud); }
+
+.quotes { display: grid; gap: 1rem; grid-template-columns: 1fr; }
+.quote {
+  background: #fff;
+  border: 1px solid rgba(27, 67, 80, .14);
+  border-left: 5px solid var(--aqua);
+  border-radius: var(--r-md);
+  padding: 1.4rem 1.35rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.quote blockquote { margin: 0; }
+.quote blockquote p {
+  font-family: var(--font-head);
+  font-size: 1.125rem;
+  line-height: 1.45;
+  color: var(--harbour);
+  margin: 0;
+}
+.quote__by {
+  font-size: .875rem;
+  color: #4A4843;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .4rem;
+}
+.quote-flag {
+  font-style: italic;
+  background: rgba(220, 203, 166, .7);
+  border: 1px dashed rgba(42, 41, 38, .4);
+  border-radius: var(--r-sm);
+  padding: .1rem .45rem;
+}
+.quote__where { font-weight: 600; color: var(--harbour); }
+
+/* ---------- service area ---------- */
+.section--area { background: var(--driftwood); }
+.section--area .section__eyebrow { color: #3E4F35; }
+.area__grid { display: grid; gap: 2rem; }
+
+.area__lists { display: grid; gap: 1.5rem; }
+.area__list-title {
+  font-size: 1.0625rem;
+  color: var(--harbour);
+  padding-bottom: .5rem;
+  margin-bottom: .75rem;
+  border-bottom: 2px solid rgba(85, 107, 74, .45);
+}
+.area__list ul { display: grid; gap: .35rem; font-size: .9688rem; }
+.area__list li { position: relative; padding-left: 1.25rem; }
+.area__list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .6em;
+  width: .45rem;
+  height: .45rem;
+  border-radius: 1px;
+  background: var(--harbour);
+}
+.area__note {
+  margin-top: 1.75rem;
+  font-size: .9375rem;
+  border-top: 1px solid rgba(42, 41, 38, .22);
+  padding-top: 1.1rem;
+}
+
+/* ---------- contact ---------- */
+.section--contact {
+  background: var(--harbour);
+  color: var(--cloud);
+}
+.contact__grid { display: grid; gap: 2.25rem; }
+.contact__lede {
+  font-size: 1.0625rem;
+  max-width: 54ch;
+  color: rgba(248, 246, 241, .95);
+  margin-bottom: 1.75rem;
+}
+.contact__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .85rem;
+  margin-bottom: 2rem;
+}
+.contact__actions .btn { flex: 1 1 auto; min-width: min(100%, 16rem); }
+
+.contact__details {
+  display: grid;
+  gap: 1rem 2rem;
+  margin: 0;
+  border-top: 1px solid rgba(143, 199, 199, .35);
+  padding-top: 1.5rem;
+}
+.contact__details dt {
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--aqua);
+  margin-bottom: .2rem;
+}
+.contact__details dd { margin: 0; font-size: 1rem; }
+.contact__details a { color: var(--cloud); text-decoration-color: var(--aqua); text-underline-offset: 3px; }
+.contact__details a:hover { color: var(--aqua); }
+
+/* ---------- quote form ---------- */
+.quote-form {
+  background: var(--cloud);
+  color: var(--basalt);
+  border-radius: var(--r-lg);
+  padding: 1.5rem 1.35rem;
+  box-shadow: var(--shadow-card);
+}
+.quote-form__title { font-size: 1.35rem; color: var(--harbour); margin-bottom: .3em; }
+.quote-form__note { font-size: .9063rem; color: #4A4843; margin-bottom: 1.35rem; }
+
+.field { margin-bottom: 1.1rem; }
+.field label {
+  display: block;
+  font-size: .875rem;
+  font-weight: 700;
+  margin-bottom: .35rem;
+  color: var(--harbour);
+}
+.field input,
+.field textarea {
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--basalt);
+  background: #fff;
+  border: 2px solid rgba(27, 67, 80, .3);
+  border-radius: var(--r-md);
+  padding: .7rem .8rem;
+}
+.field textarea { resize: vertical; min-height: 6rem; }
+.field input::placeholder,
+.field textarea::placeholder { color: #6B6862; }
+.field__hint { font-size: .8125rem; color: #4A4843; margin: .35rem 0 0; }
+.field__error {
+  font-size: .8438rem;
+  font-weight: 600;
+  color: #8C2F1E;              /* 6.2:1 on Cloud White */
+  margin: .35rem 0 0;
+}
+.field.is-invalid input,
+.field.is-invalid textarea { border-color: #8C2F1E; }
+
+.quote-form__status {
+  margin: 1rem 0 0;
+  font-size: .9063rem;
+  font-weight: 600;
+  color: var(--harbour);
+}
+.quote-form__status:empty { margin: 0; }
+
+/* ==========================================================================
+   FOOTER
+   ========================================================================== */
+.site-footer {
+  background: var(--basalt);
+  color: var(--cloud);
+  padding-block: 3rem 1.75rem;
+  font-size: .9375rem;
+}
+.footer__grid { display: grid; gap: 2.25rem; }
+
+.brand--footer .brand__name { font-size: 1.4rem; }
+.footer__tagline {
+  font-family: var(--font-head);
+  font-style: italic;
+  font-size: 1.0625rem;
+  color: var(--aqua);
+  margin: 1rem 0 .5rem;
+}
+.footer__area { color: rgba(248, 246, 241, .82); max-width: 34ch; margin: 0; }
+
+.footer__heading {
+  font-family: var(--font-body);
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--aqua);
+  margin: 0 0 .9rem;
+}
+.footer__nav ul,
+.footer__contact ul { display: grid; gap: .55rem; }
+.site-footer a { color: var(--cloud); text-decoration-color: rgba(143, 199, 199, .8); text-underline-offset: 3px; }
+.site-footer a:hover { color: var(--aqua); }
+
+.footer__base {
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(248, 246, 241, .18);
+}
+.footer__signoff {
+  font-family: var(--font-head);
+  font-size: 1.125rem;
+  color: var(--cloud);
+  margin-bottom: .5rem;
+}
+.footer__signoff .gloss { font-family: var(--font-body); font-size: .8125rem; }
+.footer__legal { font-size: .8125rem; color: rgba(248, 246, 241, .72); margin: 0; }
+
+/* ==========================================================================
+   BREAKPOINTS
+   ========================================================================== */
+
+/* --- small tablet --- */
+@media (min-width: 40em) {
+  .utility-bar__inner {
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+  }
+  .section { padding-block: 4.5rem; }
+  .hero__inner { padding-block: 4.5rem 5rem; }
+  .hero__actions .btn,
+  .contact__actions .btn { flex: 0 0 auto; min-width: 0; }
+  .cards { grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
+  .quotes { grid-template-columns: repeat(2, 1fr); }
+  .area__lists { grid-template-columns: repeat(2, 1fr); }
+  .contact__details { grid-template-columns: repeat(2, 1fr); }
+  .footer__grid { grid-template-columns: 1.4fr 1fr 1.2fr; gap: 2rem; }
+}
+
+/* --- desktop: nav goes horizontal, hamburger disappears --- */
+@media (min-width: 60em) {
+  :root { --gutter: 2rem; }
+
+  .js .nav-toggle { display: none; }
+
+  .primary-nav,
+  .js .primary-nav {
+    display: block;
+    order: 0;
+    width: auto;
+    border-top: none;
+    padding-block: 0;
+  }
+  .primary-nav ul {
+    flex-direction: row;
+    align-items: center;
+    gap: .35rem;
+  }
+  .primary-nav a:not(.btn) { padding: .55rem .7rem; font-size: .9375rem; }
+  .primary-nav__cta { margin-top: 0; margin-left: .6rem; }
+
+  .nav-bar { padding-block: 1rem; flex-wrap: nowrap; }
+  .brand__name { font-size: 1.5rem; }
+
+  .section { padding-block: 5.5rem; }
+  .hero__inner { padding-block: 6.5rem 6rem; }
+
+  .cards { grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+  .quotes { grid-template-columns: repeat(3, 1fr); }
+
+  .about__grid {
+    grid-template-columns: 5fr 7fr;
+    align-items: center;
+    gap: 3.5rem;
+  }
+  .area__grid {
+    grid-template-columns: 7fr 5fr;
+    align-items: start;
+    gap: 3.5rem;
+  }
+  .contact__grid {
+    grid-template-columns: 1.1fr 1fr;
+    gap: 3.5rem;
+    align-items: start;
+  }
+  .quote-form { padding: 2rem 1.85rem; }
+  .site-footer { padding-block: 4rem 2rem; }
+}
+
+/* --- large desktop --- */
+@media (min-width: 80em) {
+  .hero__heading { font-size: 4.75rem; }
+}
+
+/* ==========================================================================
+   PREFERENCES
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
+
+@media print {
+  .site-header, .nav-toggle, .hero__media, .hero__ph-note, .quote-form { display: none !important; }
+  body { background: #fff; color: #000; }
+  .hero, .section--contact, .site-footer { background: #fff !important; color: #000 !important; }
+  .section__heading, .hero__heading { color: #000 !important; }
+  a::after { content: " (" attr(href) ")"; font-size: .8em; }
+}
